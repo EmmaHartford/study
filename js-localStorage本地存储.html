@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="btn1">存</button>
+    <button id="btn2">取</button>
+    <button id="btn3">删</button>
+    <button id="btn4">清空</button>
+    <script>
+      const btn1Ele = document.getElementById('btn1')
+      const btn2Ele = document.getElementById('btn2')
+      const btn3Ele = document.getElementById('btn3')
+      const btn4Ele = document.getElementById('btn4')
+      // 存
+      btn1Ele.addEventListener('click', function () {
+        localStorage.setItem('name', '杰哥')
+        localStorage.setItem('age', '19')
+        localStorage.setItem('email', '123@qq.com')
+        sessionStorage.setItem('yhkmm', '123456')
+        // localStorage只能存储字符串类型数据,若存储引用类型如数组或对象需要将其序列化为字符串
+        // JSON.stringify(对象/数组) :  将JavaScript 对象或值转换为 JSON 字符串
+        const hobby = ['吃饭', '睡觉']
+        localStorage.setItem('hobby', JSON.stringify(hobby))
+      })
+      // 取
+      btn2Ele.addEventListener('click', function () {
+        console.log(localStorage.getItem('age'))
+        // JSON.parse(): 将JSON 字符串或值转换为 JavaScript 对象
+        console.log(JSON.parse(localStorage.getItem('hobby')))
+        console.log(sessionStorage.getItem('yhkmm'))
+      })
+
+      // 删除
+      btn3Ele.addEventListener('click', function () {
+        localStorage.removeItem('age')
+      })
+
+      // 清空
+      btn4Ele.addEventListener('click', function () {
+        localStorage.clear()
+      })
+    </script>
+  </body>
+</html>
