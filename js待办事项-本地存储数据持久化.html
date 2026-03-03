@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    .box {
+      padding: 5px;
+      width: 300px;
+      /* border: 1px solid #ccc; */
+      margin: 50px auto;
+    }
+
+    .box .header button {
+      padding: 5px 10px;
+      width: 100px;
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .box ul {
+      margin-top: 20px;
+    }
+
+    .box ul li {
+      list-style: none;
+      border-bottom-width: 1px;
+      border-bottom-color: #605d5d;
+      border-bottom-style: solid;
+      padding: 4px 0;
+    }
+
+    .box ul li a {
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <div class="header flex-between">
+      <input type="text" id="content" /> <button id="publish">发布</button>
+      <button id="clear">清空评论</button>
+    </div>
+    <ul id="list">
+      <!-- <li class="flex-between">
+          <div>真精彩</div>
+          <a href="javascript:;" class="edit">编辑</a>
+          <a href="javascript:;" class="del">删除</a>
+        </li> -->
+    </ul>
+  </div>
+  <script>
+    // 缓存节点
+    const inputEle = document.getElementById('content')
+    const publishBtnEle = document.getElementById('publish')
+    const ulEle = document.getElementById('list')
+    const clearBtn = document.getElementById('clear')
+    let commentArr = []
+
+    //打开时加载
+    window.addEventListener('DOMContentLoaded', function () {
+      let html = ''
+      //判断是否存在键 comment
+      if (localStorage.getItem('comment') === null) {
+        localStorage.setItem('comment', '[]')
+      } else {
+        commentArr = JSON.parse(localStorage.getItem('comment'))
+      }
+      //循环生成储存的评论
+      commentArr.forEach(content => {
+        html += `
+    <li class="flex-between">
+        <div>${content}</div>
+        <a href="javascript:;" class="del">删除</a>
+    </li>`;
+      });
+      ulEle.innerHTML = ulEle.innerHTML + html;
+    })
+    // 发布内容
+    publishBtnEle.addEventListener('click', function () {
+      // 获取输入框内容
+      let content = inputEle.value.trim()
+      if (!content) {
+        alert('内容不能为空')
+        return
+      } else {
+        commentArr.push(content)
+        localStorage.setItem('comment', JSON.stringify(commentArr))
+      }
+      let newLiStr = `
+            <li class="flex-between">
+                <div>${content}</div>
+                <a href="javascript:;" class="del">删除</a>
+            </li> `
+
+      // 以字符串方式追加
+      ulEle.innerHTML = ulEle.innerHTML + newLiStr
+      // 清空输入框
+      inputEle.value = ''
+    })
+
+    // 将删除的单击事件委托给ul
+    ulEle.addEventListener('click', function (event) {
+      if (event.target.className === 'del') {
+        const li = event.target.closest('li');
+        if (li) {
+          const lis = Array.from(this.querySelectorAll('li'));
+          const index = lis.indexOf(li);
+          commentArr.splice(index, 1)
+          localStorage.setItem('comment', JSON.stringify(commentArr))
+        }
+        console.log('删除')
+        event.target.parentElement.remove()
+      }
+    })
+    //清空评论内容
+    clearBtn.addEventListener('click', function () {
+      commentArr = []
+      localStorage.removeItem('comment')
+      ulEle.innerHTML = ``
+    })
+  </script>
+</body>
+
+</html>
